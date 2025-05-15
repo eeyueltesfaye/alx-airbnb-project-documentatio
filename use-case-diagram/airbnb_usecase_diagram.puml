@@ -1,0 +1,101 @@
+@startuml AirbnbClone_UseCaseDiagram
+
+title Airbnb Clone – Use Case Diagram (with Relationships)
+
+' Define Actors
+actor "User" as User
+actor "Guest" as Guest
+actor "Host" as Host
+actor "Admin" as Admin
+actor "OAuth Provider" as OAuth
+
+' Actor Generalization
+Guest --|> User
+Host --|> User
+
+' System Boundary
+rectangle "Airbnb Clone Backend System" {
+
+  ' === User Management ===
+  usecase "Register Account" as UC_Register
+  usecase "Login with Email/Password" as UC_LoginEmail
+  usecase "Login via OAuth" as UC_LoginOAuth
+  usecase "Manage Profile" as UC_Profile
+
+  ' === Property Management ===
+  usecase "Add Listing" as UC_AddListing
+  usecase "Edit/Delete Listing" as UC_EditListing
+
+  ' === Search and Filtering ===
+  usecase "Search Properties" as UC_Search
+  usecase "Filter Properties" as UC_Filter
+  usecase "Paginate Results" as UC_Paginate
+
+  ' === Booking Management ===
+  usecase "Create Booking" as UC_Book
+  usecase "Cancel Booking" as UC_CancelBooking
+  usecase "Track Booking Status" as UC_BookingStatus
+
+  ' === Payment ===
+  usecase "Make Payment" as UC_Pay
+  usecase "Receive Host Payout" as UC_Payout
+
+  ' === Reviews ===
+  usecase "Leave Review" as UC_Review
+  usecase "Respond to Review" as UC_RespondReview
+
+  ' === Notifications ===
+  usecase "Receive Notification" as UC_Notify
+
+  ' === Admin ===
+  usecase "Manage Users" as UC_AdminUsers
+  usecase "Manage Listings" as UC_AdminListings
+  usecase "Manage Bookings" as UC_AdminBookings
+  usecase "Manage Payments" as UC_AdminPayments
+}
+
+' === Relationships ===
+
+' Include: Login always includes auth
+UC_LoginEmail --> UC_Register : <<include>>
+UC_LoginOAuth --> UC_Register : <<include>>
+
+' Extend: Filter and Pagination are optional to Search
+UC_Search <|-- UC_Filter : <<extend>>
+UC_Search <|-- UC_Paginate : <<extend>>
+
+' Guest
+Guest --> UC_LoginEmail
+Guest --> UC_LoginOAuth
+Guest --> UC_Profile
+Guest --> UC_Search
+Guest --> UC_Filter
+Guest --> UC_Paginate
+Guest --> UC_Book
+Guest --> UC_CancelBooking
+Guest --> UC_BookingStatus
+Guest --> UC_Pay
+Guest --> UC_Review
+Guest --> UC_Notify
+
+' Host
+Host --> UC_LoginEmail
+Host --> UC_LoginOAuth
+Host --> UC_Profile
+Host --> UC_AddListing
+Host --> UC_EditListing
+Host --> UC_BookingStatus
+Host --> UC_Payout
+Host --> UC_RespondReview
+Host --> UC_Notify
+
+' OAuth Provider
+OAuth --> UC_LoginOAuth
+
+' Admin
+Admin --> UC_AdminUsers
+Admin --> UC_AdminListings
+Admin --> UC_AdminBookings
+Admin --> UC_AdminPayments
+
+@enduml
